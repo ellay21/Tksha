@@ -9,7 +9,7 @@
 - 🔐 **User Authentication** – Secure signup and login with encrypted credentials.
 - 🧑‍🤝‍🧑 **Profile Management** – Upload photos, edit bios, and personalize your profile.
 - ❤️ **Smart Matching** – Like, pass, and match with users who like you back.
-- 💬 **Real-Time Messaging** – Seamless chat experience after a match is made.
+- 💬 **Messaging** – Seamless chat experience after a match is made.
 - 🌍 **Location Awareness** – Optionally match users nearby (for local vibes).
 - 🛡️ **Privacy & Safety** – Block/report features and secure data handling.
 
@@ -70,7 +70,7 @@ Tksha/backend
 
 ```
 $host = "localhost";
-$dbname = "matchmate";
+$dbname = "Tksha";
 $username = "root";
 $password = "";
 ```
