@@ -1,0 +1,724 @@
+openapi: 3.0.0
+info:
+  title: Tinder Clone API
+  description: API documentation for the Tinder Clone application
+  version: 1.0.0
+servers:
+  - url: /Tinder/backend/api
+    description: Local development server
+paths:
+  /auth/signup.php:
+    post:
+      summary: Register a new user
+      description: Creates a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - gender
+                - birthdate
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                gender:
+                  type: string
+                  enum: [male, female]
+                  example: male
+                birthdate:
+                  type: string
+                  format: date
+                  example: 1990-01-01
+                age:
+                  type: integer
+                  example: 30
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: john@example.com
+                      gender:
+                        type: string
+                        example: male
+                      age:
+                        type: integer
+                        example: 30
+                      profile_completed:
+                        type: boolean
+                        example: false
+                      interests:
+                        type: array
+                        items:
+                          type: string
+                        example: []
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email already exists
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Registration failed
+  /auth/login.php:
+    post:
+      summary: User login
+      description: Authenticates a user and returns a token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: john@example.com
+                      gender:
+                        type: string
+                        example: male
+                      age:
+                        type: integer
+                        example: 30
+                      profile_pic:
+                        type: string
+                        example: ../uploads/profile_pics/1_1234567890.jpg
+                      profile_completed:
+                        type: boolean
+                        example: true
+                      interests:
+                        type: array
+                        items:
+                          type: string
+                        example: [movies, music, sports]
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid email or password
+  /users/profile.php:
+    get:
+      summary: Get user profile
+      description: Returns the profile information of the authenticated user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  profile:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: john@example.com
+                      gender:
+                        type: string
+                        example: male
+                      age:
+                        type: integer
+                        example: 30
+                      bio:
+                        type: string
+                        example: I love hiking and traveling
+                      location:
+                        type: string
+                        example: New York, USA
+                      profile_pic:
+                        type: string
+                        example: ../uploads/profile_pics/1_1234567890.jpg
+                      profile_completed:
+                        type: boolean
+                        example: true
+                      interests:
+                        type: array
+                        items:
+                          type: string
+                        example: [movies, music, sports]
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User not found
+  /users/update_profile.php:
+    post:
+      summary: Update user profile
+      description: Updates the profile information of the authenticated user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                  example: I love hiking and traveling
+                location:
+                  type: string
+                  example: New York, USA
+                interests:
+                  type: array
+                  items:
+                    type: string
+                  example: [movies, music, sports]
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile_pic:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Profile updated successfully
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: john@example.com
+                      gender:
+                        type: string
+                        example: male
+                      age:
+                        type: integer
+                        example: 30
+                      profile_pic:
+                        type: string
+                        example: ../uploads/profile_pics/1_1234567890.jpg
+                      profile_completed:
+                        type: boolean
+                        example: true
+                      interests:
+                        type: array
+                        items:
+                          type: string
+                        example: [movies, music, sports]
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Profile update failed
+  /users/match.php:
+    get:
+      summary: Get potential match
+      description: Returns a potential match for the authenticated user
+      tags:
+        - Matching
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Potential match retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  profile:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      name:
+                        type: string
+                        example: Jane Doe
+                      age:
+                        type: integer
+                        example: 28
+                      bio:
+                        type: string
+                        example: I love reading and cooking
+                      location:
+                        type: string
+                        example: Los Angeles, USA
+                      profile_pic:
+                        type: string
+                        example: ../uploads/profile_pics/2_1234567890.jpg
+                      interests:
+                        type: array
+                        items:
+                          type: string
+                        example: [reading, cooking, music]
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized
+    post:
+      summary: Like or dislike a user
+      description: Records a like or dislike action for a potential match
+      tags:
+        - Matching
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - profile_id
+                - action
+              properties:
+                profile_id:
+                  type: integer
+                  example: 2
+                action:
+                  type: string
+                  enum: [like, dislike]
+                  example: like
+      responses:
+        '200':
+          description: Action recorded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  match:
+                    type: boolean
+                    example: true
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Profile ID and action are required
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Action failed
+  /users/messages.php:
+    get:
+      summary: Get matches or conversation
+      description: Returns all matches or messages for a specific match
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: match_id
+          schema:
+            type: integer
+          description: ID of the match to get messages for
+      responses:
+        '200':
+          description: Matches or messages retrieved successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                      matches:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            name:
+                              type: string
+                              example: Jane Doe
+                            profile_pic:
+                              type: string
+                              example: ../uploads/profile_pics/2_1234567890.jpg
+                            last_message:
+                              type: string
+                              example: Hello, how are you?
+                            last_message_time:
+                              type: string
+                              format: date-time
+                              example: 2023-06-01 12:34:56
+                            unread_count:
+                              type: integer
+                              example: 2
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                      match:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 2
+                          name:
+                            type: string
+                            example: Jane Doe
+                          profile_pic:
+                            type: string
+                            example: ../uploads/profile_pics/2_1234567890.jpg
+                      messages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            match_id:
+                              type: integer
+                              example: 1
+                            sender_id:
+                              type: integer
+                              example: 1
+                            message:
+                              type: string
+                              example: Hello, how are you?
+                            is_read:
+                              type: integer
+                              example: 1
+                            created_at:
+                              type: string
+                              format: date-time
+                              example: 2023-06-01 12:34:56
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized
+        '404':
+          description: Match not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Match not found
+    post:
+      summary: Send message, mark as read, or unmatch
+      description: Sends a message, marks messages as read, or unmatches a user
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - match_id
+              properties:
+                match_id:
+                  type: integer
+                  example: 1
+                message:
+                  type: string
+                  example: Hello, how are you?
+                action:
+                  type: string
+                  enum: [mark_read, unmatch]
+                  example: mark_read
+      responses:
+        '200':
+          description: Action performed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Match ID is required
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized
+        '404':
+          description: Match not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Match not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unmatch failed
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
