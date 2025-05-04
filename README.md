@@ -28,6 +28,7 @@
 ---
 
 ## 📁 Folder Structure
+```
 Tksha/backend
 ├── api/
 │   ├── auth/
@@ -47,7 +48,7 @@ Tksha/backend
 │   └── index.html
 └── uploads/
     └── profile_pics
-
+```
 ## ⚙️ Getting Started
 
 ### 🧩 Prerequisites
