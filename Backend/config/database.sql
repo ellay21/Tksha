@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
     age INT NOT NULL,
     bio TEXT,
     location VARCHAR(100),
+    latitude DECIMAL(9,6),
+    longitude DECIMAL(9,6),
     profile_pic VARCHAR(255),
     profile_completed TINYINT(1) DEFAULT 0,
     created_at DATETIME NOT NULL,

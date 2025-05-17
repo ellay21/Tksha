@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 require_once '../../config/db.php';
 $pdo = require '../../config/db.php';
 
-function getAuthorizationHeader() {
+function getAuthorizationHeader()
+{
     $headers = null;
     if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
         $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
@@ -59,7 +60,7 @@ if (!$token) {
     exit();
 }
 
-$secret_key = 'ellay21'; 
+$secret_key = 'ellay21';
 $user_id = verifyJWT($token, $secret_key);
 
 if (!$user_id) {
@@ -68,7 +69,7 @@ if (!$user_id) {
     exit();
 }
 
-$stmt = $pdo->prepare("SELECT id, name, email, gender, age, bio, location, profile_completed FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT id, name, email, gender, age, bio, location, latitude, longitude, profile_completed FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -95,6 +96,8 @@ $profileData = [
     'age' => $user['age'],
     'bio' => $user['bio'],
     'location' => $user['location'],
+    'latitude' => $user['latitude'],
+    'longitude' => $user['longitude'],
     'profile_photos' => $profile_photos,
     'profile_completed' => $user['profile_completed'] == 1,
     'interests' => $interests
@@ -105,7 +108,8 @@ echo json_encode([
     'profile' => $profileData
 ]);
 
-function verifyJWT($token, $secret_key) {
+function verifyJWT($token, $secret_key)
+{
     $token_parts = explode('.', $token);
 
     if (count($token_parts) != 3) {
@@ -131,11 +135,13 @@ function verifyJWT($token, $secret_key) {
     return $payload['user_id'] ?? false;
 }
 
-function base64url_encode($data) {
+function base64url_encode($data)
+{
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
-function base64url_decode($data) {
+function base64url_decode($data)
+{
     $remainder = strlen($data) % 4;
     if ($remainder) {
         $padlen = 4 - $remainder;
@@ -143,5 +149,3 @@ function base64url_decode($data) {
     }
     return base64_decode(strtr($data, '-_', '+/'));
 }
-
-?>

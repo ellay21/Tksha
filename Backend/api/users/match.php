@@ -12,7 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../../config/db.php';
 $pdo = require '../../config/db.php';
 
-function getAuthorizationHeader() {
+function getAuthorizationHeader()
+{
     $headers = null;
     if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
         $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
@@ -57,19 +58,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $stmt = $pdo->prepare("SELECT gender FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if (!$user) {
         http_response_code(404);
         echo json_encode(['success' => false, 'message' => 'User not found']);
         exit();
     }
-    
+
     $opposite_gender = $user['gender'] === 'male' ? 'female' : 'male';
-    
+
     $stmt = $pdo->prepare("SELECT interest FROM user_interests WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $user_interests = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
+
     // Get potential matches
     // 1. Get users of opposite gender
     // 2. Exclude users that have been liked or disliked
@@ -87,18 +88,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ");
     $stmt->execute([$opposite_gender, $user_id]);
     $potential_match = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if (!$potential_match) {
         echo json_encode(['success' => true, 'profile' => null]);
         exit();
     }
-    
+
     $stmt = $pdo->prepare("SELECT interest FROM user_interests WHERE user_id = ?");
     $stmt->execute([$potential_match['id']]);
     $match_interests = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
+
     $potential_match['interests'] = $match_interests;
-    
+
     echo json_encode(['success' => true, 'profile' => $potential_match]);
     exit();
 }
@@ -106,31 +107,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // Handle POST request - Like or dislike a user
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    
+
     if (!isset($data['profile_id']) || !isset($data['action'])) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Profile ID and action are required']);
         exit();
     }
-    
+
     $profile_id = $data['profile_id'];
     $action = $data['action'];
-    
+
     if ($action !== 'like' && $action !== 'dislike') {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
         exit();
     }
-    
+
     $pdo->beginTransaction();
-    
+
     try {
         $stmt = $pdo->prepare("INSERT INTO user_actions (user_id, target_user_id, action, created_at) VALUES (?, ?, ?, NOW())");
         $stmt->execute([$user_id, $profile_id, $action]);
-        
+
         // Check if it's a match (both users liked each other)
         $is_match = false;
-        
+
         if ($action === 'like') {
             $stmt = $pdo->prepare("
                 SELECT 1 FROM user_actions 
@@ -138,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
             $stmt->execute([$profile_id, $user_id]);
             $is_match = $stmt->rowCount() > 0;
-            
+
             if ($is_match) {
                 $stmt = $pdo->prepare("
                     INSERT INTO matches (user_id_1, user_id_2, created_at) 
@@ -147,23 +148,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$user_id, $profile_id]);
             }
         }
-        
+
         $pdo->commit();
-        
+
         echo json_encode(['success' => true, 'match' => $is_match]);
-        
     } catch (PDOException $e) {
         $pdo->rollBack();
-        
+
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Action failed: ' . $e->getMessage()]);
     }
-    
+
     exit();
 }
 
 // Function to verify JWT
-function verifyJWT($token, $secret_key) {
+function verifyJWT($token, $secret_key)
+{
     $token_parts = explode('.', $token);
 
     if (count($token_parts) != 3) {
@@ -191,11 +192,13 @@ function verifyJWT($token, $secret_key) {
     return $payload['user_id'] ?? false;
 }
 
-function base64url_encode($data) {
+function base64url_encode($data)
+{
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
-function base64url_decode($data) {
+function base64url_decode($data)
+{
     $remainder = strlen($data) % 4;
     if ($remainder) {
         $padlen = 4 - $remainder;
@@ -204,3 +207,32 @@ function base64url_decode($data) {
     return base64_decode(strtr($data, '-_', '+/'));
 }
 ?>
+
+// Get authenticated user's location
+$user_stmt = $pdo->prepare("SELECT latitude, longitude FROM users WHERE id = ?");
+$user_stmt->execute([$user_id]);
+$user_location = $user_stmt->fetch(PDO::FETCH_ASSOC);
+
+$radius_km = isset($_GET['radius']) ? floatval($_GET['radius']) : 10; // default 10km
+
+// Get potential matches within radius
+$stmt = $pdo->prepare("
+SELECT u.id, u.name, u.age, u.bio, u.location, u.latitude, u.longitude, u.profile_pic,
+(6371 * acos(
+cos(radians(:user_lat)) * cos(radians(u.latitude)) *
+cos(radians(u.longitude) - radians(:user_lng)) +
+sin(radians(:user_lat)) * sin(radians(u.latitude))
+)) AS distance
+FROM users u
+WHERE u.id != :user_id
+AND u.latitude IS NOT NULL AND u.longitude IS NOT NULL
+HAVING distance <= :radius_km
+    ORDER BY distance ASC
+    LIMIT 1 ");
+$stmt->execute([
+    ':user_lat' => $user_location['latitude'],
+    ':user_lng' => $user_location['longitude'],
+    ':user_id' => $user_id,
+    ':radius_km' => $radius_km
+]);
+$potential_match = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -88,6 +88,14 @@ paths:
                         items:
                           type: string
                         example: []
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
         '400':
           description: Bad request
           content:
@@ -176,11 +184,27 @@ paths:
                       profile_completed:
                         type: boolean
                         example: true
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
                       interests:
                         type: array
                         items:
                           type: string
                         example: [movies, music, sports]
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
         '401':
           description: Unauthorized
           content:
@@ -234,15 +258,28 @@ paths:
                       bio:
                         type: string
                         example: I love hiking and traveling
-                      location:
-                        type: string
-                        example: New York, USA
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
                       profile_pic:
                         type: string
                         example: ../uploads/profile_pics/1_1234567890.jpg
                       profile_completed:
                         type: boolean
                         example: true
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
                       interests:
                         type: array
                         items:
@@ -291,9 +328,14 @@ paths:
                 bio:
                   type: string
                   example: I love hiking and traveling
-                location:
-                  type: string
-                  example: New York, USA
+                latitude:
+                  type: number
+                  format: float
+                  example: 40.7128
+                longitude:
+                  type: number
+                  format: float
+                  example: -74.0060
                 interests:
                   type: array
                   items:
@@ -344,6 +386,14 @@ paths:
                       profile_completed:
                         type: boolean
                         example: true
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
                       interests:
                         type: array
                         items:
@@ -378,7 +428,7 @@ paths:
   /users/match.php:
     get:
       summary: Get potential match
-      description: Returns a potential match for the authenticated user
+      description: Returns a potential match based on location proximity using latitude/longitude coordinates
       tags:
         - Matching
       security:
@@ -415,6 +465,14 @@ paths:
                       profile_pic:
                         type: string
                         example: ../uploads/profile_pics/2_1234567890.jpg
+                      latitude:
+                        type: number
+                        format: float
+                        example: 40.7128
+                      longitude:
+                        type: number
+                        format: float
+                        example: -74.0060
                       interests:
                         type: array
                         items:

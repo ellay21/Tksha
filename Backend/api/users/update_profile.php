@@ -158,10 +158,12 @@ $pdo->beginTransaction();
 try {
     $bio = $data['bio'] ?? null;
     $location = $data['location'] ?? null;
+    $latitude = $data['latitude'] ?? null;
+    $longitude = $data['longitude'] ?? null;
     $interests = $data['interests'] ?? [];
 
-    $stmt = $pdo->prepare("UPDATE users SET bio = ?, location = ?, profile_completed = 1 WHERE id = ?");
-    $stmt->execute([$bio, $location, $user_id]);
+    $stmt = $pdo->prepare("UPDATE users SET bio = ?, location = ?, latitude = ?, longitude = ?, profile_completed = 1 WHERE id = ?");
+    $stmt->execute([$bio, $location, $latitude, $longitude, $user_id]);
 
     $stmt = $pdo->prepare("DELETE FROM user_interests WHERE user_id = ?");
     $stmt->execute([$user_id]);
