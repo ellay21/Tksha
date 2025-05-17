@@ -68,7 +68,7 @@ if (!$user_id) {
     exit();
 }
 
-$stmt = $pdo->prepare("SELECT id, name, email, gender, age, bio, location, profile_pic, profile_completed FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT id, name, email, gender, age, bio, location, profile_completed FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -82,6 +82,11 @@ $stmt = $pdo->prepare("SELECT interest FROM user_interests WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $interests = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
+// Fetch all profile photos for the user
+$stmt = $pdo->prepare("SELECT photo_url FROM profile_photos WHERE user_id = ? ORDER BY uploaded_at ASC");
+$stmt->execute([$user_id]);
+$profile_photos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
 $profileData = [
     'id' => $user['id'],
     'name' => $user['name'],
@@ -90,7 +95,7 @@ $profileData = [
     'age' => $user['age'],
     'bio' => $user['bio'],
     'location' => $user['location'],
-    'profile_pic' => $user['profile_pic'],
+    'profile_photos' => $profile_photos,
     'profile_completed' => $user['profile_completed'] == 1,
     'interests' => $interests
 ];

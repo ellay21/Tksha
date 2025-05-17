@@ -574,9 +574,11 @@ paths:
                           name:
                             type: string
                             example: Jane Doe
-                          profile_pic:
-                            type: string
-                            example: ../uploads/profile_pics/2_1234567890.jpg
+                          profile_photos:
+                            type: array
+                            items:
+                              type: string
+                          example: ["../uploads/profile_pics/1_1234567890.jpg", "../uploads/profile_pics/1_1234567891.jpg"]
                       messages:
                         type: array
                         items:
