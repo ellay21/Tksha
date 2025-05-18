@@ -6,10 +6,13 @@ RUN apt-get update && apt-get install -y unzip curl \
     && curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer
 
+# 🛠 Install PostgreSQL PDO driver
+RUN docker-php-ext-install pdo pdo_pgsql
+
 # Set working directory
 WORKDIR /var/www/html/
 
-# Copy all application code to Apache web root
+# Copy application files
 COPY . .
 
 # Install PHP dependencies
