@@ -1,0 +1,26 @@
+Hostname
+An internal hostname used by your Render services.
+
+dpg-d0ku13buibrs739rm5o0-a
+
+Port
+5432
+
+Database
+tksha
+
+Username
+ellay
+
+Password
+5TCdJiB7Xy6zuSAs2rw1mok5izBxZf8F
+
+
+Internal Database URL
+postgresql://ellay:5TCdJiB7Xy6zuSAs2rw1mok5izBxZf8F@dpg-d0ku13buibrs739rm5o0-a/tksha
+
+
+External Database URL
+postgresql://ellay:5TCdJiB7Xy6zuSAs2rw1mok5izBxZf8F@dpg-d0ku13buibrs739rm5o0-a.oregon-postgres.render.com/tksha
+
+
