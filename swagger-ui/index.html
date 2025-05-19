@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My API Docs</title>
+    <link rel="stylesheet" href="./swagger-ui.css">
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script src="./swagger-ui-bundle.js"></script>
+    <script>
+    window.onload = function() {
+        window.ui = SwaggerUIBundle({
+            url: "/swagger.yaml",  <!-- Your YAML file -->
+            dom_id: '#swagger-ui',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            layout: "StandaloneLayout"
+        });
+    };
+    </script>
+</body>
+</html>
