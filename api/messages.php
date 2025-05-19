@@ -12,7 +12,8 @@ include_once '../models/Message.php';
 include_once '../utils/jwt.php';
 include_once '../utils/pusher.php';
 include_once '../models/UserMatch.php';
-
+require_once __DIR__ . '/../config/cors.php';
+handleCORS();
 // Get database connection
 $database = new Database();
 $db = $database->getConnection();

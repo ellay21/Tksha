@@ -12,7 +12,8 @@ include_once '../models/User.php';
 include_once '../models/Activity.php';
 include_once '../utils/jwt.php';
 include_once '../utils/location.php';
-
+require_once __DIR__ . '/../config/cors.php';
+handleCORS();
 // Get database connection
 $database = new Database();
 $db = $database->getConnection();

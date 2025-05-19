@@ -10,7 +10,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../models/User.php';
 include_once '../utils/jwt.php';
-
+require_once __DIR__ . '/../config/cors.php';
+handleCORS();
 // Get database connection
 $database = new Database();
 $db = $database->getConnection();

@@ -1,15 +1,5 @@
 <?php
-// First handle OPTIONS request for CORS preflight
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    header("Access-Control-Max-Age: 3600");
-    http_response_code(204);
-    exit();
-}
-
-// Standard CORS headers for actual request
+// Headers
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
@@ -21,6 +11,8 @@ include_once '../config/database.php';
 include_once '../models/User.php';
 include_once '../utils/location.php';
 include_once '../utils/validation.php';
+require_once __DIR__ . '/../config/cors.php';
+handleCORS();
 
 // Get database connection
 $database = new Database();

@@ -10,6 +10,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../utils/jwt.php';
 include_once '../utils/pusher.php';
+require_once __DIR__ . '/../config/cors.php';
+handleCORS();
 //file_put_contents("debug.txt", print_r($_POST, true));
 
 // Get JWT from headers
