@@ -3,10 +3,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 class PusherHandler {
     // Your Pusher credentials (from the App Keys tab in Pusher dashboard)
-    private $app_id = '1994056';
-    private $key = '6f299b7743360cbbab42';
-    private $secret = '443e3050d66473c203e3';
-    private $cluster = 'mt1';  // The cluster you selected (mt1 = US East)
+    private $app_id = 'id';
+    private $key = 'key';
+    private $secret = 'secret_key';
+    private $cluster = 'CLusteres';  // The cluster you selected (mt1 = US East)
     private $pusher;
     
     public function __construct() {
